@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP MC74HC1G04DTT1G
+D ON Semiconductor MC74HC1G04DTT1G CMOS Inverter, Inverting, 2  6 V, 5-Pin TSOP
+K
+F https://www.onsemi.com/pub/Collateral/MC74HC1G04-D.PDF
+$ENDCMP
+#
+#End Doc Library

@@ -1,0 +1,9 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP USB2640-HZH-02
+D USB 2.0 Flash Controller/USB Hub QFN48
+K
+F https://componentsearchengine.com/Datasheets/2/USB2640-HZH-02.pdf
+$ENDCMP
+#
+#End Doc Library

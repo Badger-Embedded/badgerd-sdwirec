@@ -1,0 +1,26 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#SamacSys ECAD Model MC74HC1G04DTT1G
+#/411697/407529/2.49/5/3/Integrated Circuit
+DEF MC74HC1G04DTT1G IC 0 30 Y Y 1 F N
+F0 "IC" 1050 300 50 H V L CNN
+F1 "MC74HC1G04DTT1G" 1050 200 50 H V L CNN
+F2 "SOT95P275X110-5N" 1050 100 50 H I L CNN
+F3 "https://www.onsemi.com/pub/Collateral/MC74HC1G04-D.PDF" 1050 0 50 H I L CNN
+F4 "ON Semiconductor MC74HC1G04DTT1G CMOS Inverter, Inverting, 2  6 V, 5-Pin TSOP" 1050 -100 50 H I L CNN "Description"
+F5 "1.1" 1050 -200 50 H I L CNN "Height"
+F6 "863-MC74HC1G04DTT1G" 1050 -300 50 H I L CNN "Mouser Part Number"
+F7 "https://www.mouser.co.uk/ProductDetail/onsemi/MC74HC1G04DTT1G?qs=qg33o%252B8vzFoVD3EmN%252BzWZg%3D%3D" 1050 -400 50 H I L CNN "Mouser Price/Stock"
+F8 "onsemi" 1050 -500 50 H I L CNN "Manufacturer_Name"
+F9 "MC74HC1G04DTT1G" 1050 -600 50 H I L CNN "Manufacturer_Part_Number"
+DRAW
+X NC 1 0 0 200 R 50 50 0 0 N
+X IN_A 2 0 -100 200 R 50 50 0 0 P
+X GND 3 0 -200 200 R 50 50 0 0 P
+X OUT_~Y 4 1200 0 200 L 50 50 0 0 P
+X VCC 5 1200 -100 200 L 50 50 0 0 P
+P 5 0 1 6 200 100 1000 100 1000 -300 200 -300 200 100 N
+ENDDRAW
+ENDDEF
+#
+#End Library
