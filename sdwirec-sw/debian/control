@@ -1,0 +1,26 @@
+Source: sd-mux-ctrl
+Maintainer: Adam Malinowski <a.malinowsk2@partner.samsung.com>
+Section: utils
+Priority: optional
+Build-Depends:
+ bash-completion,
+ cmake,
+ debhelper (>=9),
+ libftdi1-dev (>= 1.4),
+ libpopt-dev,
+ pkg-config
+Standards-Version: 4.1.4
+
+Package: sd-mux-ctrl
+Architecture: any
+Depends:
+ libftdi1-2 (>=1.4),
+ libpopt0,
+ ${misc:Depends},
+ ${shlibs:Depends},
+Description: Tool for controlling multiple sd-mux devices.
+ This tool allows:
+  to connect SD card to DUT (Device Under Test) or to TS (Test Server)
+  to connect one USB port to DUT or TS
+  to power off or on DUT
+  to reset DUT through power disconnecting and reconnecting

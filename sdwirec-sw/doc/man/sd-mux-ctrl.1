@@ -1,0 +1,298 @@
+.TH SD-MUX-CTRL 1 "March 2018" Tizen "SD MUX User Manual"
+
+.SH NAME
+
+.PP
+sd-mux-ctrl - control software for sd-mux devices
+
+.SH SYNOPSIS
+
+.PP
+.B  sd-mux-ctrl [-liuortdspcmvexn?] [-l|--list] [-i|--info] [-u|--status] [-o|--show-serial] [-r|--set-serial=STRING] [-t|--init] [-d|--dut]
+.B [-s|--ts] [-p|--pins=INT] [-c|--tick] [-y|--dyper1=STRING] [-z|--dyper2=STRING] [-m|--tick-time=INT] [-v|--device-id=INT]
+.B [-e|--device-serial=STRING] [-x|--vendor=INT] [-a|--product=INT] [-k|--device-type=STRING] [-n|--invert] [-?|--help] [--usage]
+
+.SH DESCRIPTION
+
+.PP
+\fIsd-mux-ctrl\fR is a tool for controlling multiple sd-mux devices. This tool along with the device supports the
+following actions:
+.RS 2
+1. \fBconnect\fR SD card to DUT (Device Under Test) or to TS (Test Server)
+.RE
+.RS 2
+2. \fBconnect\fR one USB port to DUT or TS
+.RE
+.RS 2
+3. \fBpower\fR off/on connected DUT
+.RE
+.RS 2
+4. \fBreset\fR connected DUT by power disconnecting and reconnecting after specified timeout
+.RE
+.PP
+After manufacturing, each new sd-mux device has VENDOR ID set to 0x0403 which is the ID of FTDI company of whose chip
+(FT245RL) the device is based.
+Before first real use, the device should be given a unique serial number.
+To do that \fB--set-serial\fR command must be executed. \fB--set-serial\fR command writes additional information and
+one of them is VENDOR ID.
+Since then the device may be used without using \fB--vendor\fR option which is necessary until the correct VENDOR ID
+is set.
+
+.\" ===========================================================================
+.\" Global options
+.\" ===========================================================================
+.SH OPTIONS
+
+.PP
+-m, \-\-tick-time
+.RS 2
+Set period (in milliseconds) for \fB--tick\fR command.
+.RE
+
+.PP
+-v, \-\-device-id
+.RS 2
+Point at device which is to be used with selected command. Argument for this option is an integer number which is the
+ID of wanted device. It may be found in the result of \fB--list\fR command.
+This method is not recommended for common usage as the ID may change after disconnecting and reconnecting devices.
+This method may be helpful in particular situations when serial number is not a reliable way of device addressing.
+.RE
+
+.PP
+\-e, \-\-device-serial
+.RS 2
+Point at device which is to be used with selected command. Argument for this option is a string which is the serial
+number of wanted device. It may be found in the result of \fB--list\fR command.
+This is the recommended way of addressing devices.
+.RE
+
+.PP
+\-x, \-\-vendor
+.RS 2
+Set VENDOR ID of devices which are to be used by sd-mux-ctrl. Default value is 0x04e8 which is assigned to
+SAMSUNG Electronics Company. Default PRODUCT ID is equal to 0x6001 - the default FTDI value.
+.RE
+
+.PP
+\-a, \-\-product
+.RS 2
+Set PRODUCT ID of devices which are to be used by sd-mux-ctrl. Default value is 0x6001.
+.RE
+
+.PP
+\-k, \-\-device-type
+.RS 2
+Set device type of sd-mux. It can be either "sd-mux" or "sd-wire". This setting is used to distinguish one type
+of SD-MUX from another. "sd-mux" is a type of standard, full-sized SD-MUX board, while "sd-wire" is a type of
+miniaturized version of SD-MUX with functionality reduced to SD card multiplexing only.
+.RE
+
+.PP
+\-n, \-\-invert
+.RS 2
+Invert bits given in argument of \fB--pins\fR command. Useful for debugging purposes.
+.RE
+
+.PP
+\-h, \-\-help
+.RS 2
+Print short help and exit.
+.RE
+
+.PP
+\-\-usage
+.RS 2
+Print list of command and options and exit.
+.RE
+
+.\" ===========================================================================
+.\" Commands descriptions
+.\" ===========================================================================
+.SH COMMANDS
+
+.SS \fB\-l, \-\-list\fR
+
+.RS 2
+Print list of all connected sd-mux devices and exit. It takes optional \fB--vendor --product\fR arguments that allow to use
+other VENDOR and PRODUCT IDs then the default ones.
+The default value is 0x04e8:6001 which belongs to SAMSUNG Electronics Company.
+VENDOR and PRODUCT IDs are used to discover all connected sd-mux devices. This is very important in post production
+(sd-mux device) phase, before first use.
+.RE
+
+.SS \fB\-i, \-\-info\fR
+
+.RS 2
+Print detailed information about selected device (\fB--device-serial\fR). Sample output of this command:
+.nf
+
+\& VID:     0x04e8
+\& PID:     0x6001
+\& Release: 0x0600
+\& Bus Powered:  90 mA
+\& Manufacturer: SRPOL
+\& Product:      sd-mux
+\& Serial:       odroid_u3_1
+\& Checksum      : ea57
+\& Internal EEPROM
+\& PNP: 1
+\& Channel A has Mode UART VCP
+\& C0 Function: TXLED
+\& C1 Function: RXLED
+\& C2 Function: TXDEN
+\& C3 Function: PWREN
+\& C4 Function: SLEEP
+
+.fi
+Shape of this output depends on libftdi library so may change along with library changes.
+.RE
+
+.SS \fB\-u, \-\-status\fR
+
+.RS 2
+Print current state of selected device. Example command with output:
+.nf
+
+$ \fBsd-mux-ctrl --status --device-serial odroid_u3_1
+USB connected to: DUT
+SD connected to: DUT\fR
+$
+
+Or:
+
+$ \fBsd-mux-ctrl --status --device-serial odroid_u3_1
+Device not initialized!\fR
+$
+
+when the device is not initialized after connecting to a host.
+
+.fi
+
+.SS \fB\-o, \-\-show-serial\fR
+
+.RS 2
+Print serial number of selected device. Use \fB--device-id\fR to select wanted device. This command outputs only serial
+number, without end of line.
+This command is useful actually only for scripts. Example command with output:
+.nf
+
+[sd-mux-ctrl-0.0.1]$ \fBsudo sd-mux-ctrl --device-id=0 --show-serial
+minnow_max_1\fR[sd-mux-ctrl-0.0.1]$
+.fi
+
+.SS \fB\-r, \-\-set-serial\fR
+
+.RS 2
+Set serial number of selected device. Use \fB--device-id\fR or \fB--device-serial\fR to select wanted device.
+Following example changes device's serial number from \fBAL018T40\fR to \fBodroid_u3_1\fR :
+.nf
+
+[rpm]$ \fBsudo sd-mux-ctrl --device-serial=AL018T40 --vendor=0x403 --set-serial=odroid_u3_1\fR
+
+.fi
+\fB--set-serial\fR command does actually a little bit more than setting a serial number.
+It also writes new values of VENDOR ID, Product and Manufacturer.
+\fBVENDOR ID (VID)\fR is set to \fB0x04e8\fR (SAMSUNG Electronics Company), Product is set to \fBsd-mux\fR
+and \fBManufacturer\fR is set to \fBSRPOL\fR which is a short name of Samsung R&D Poland.
+
+.SS \fB\-t, \-\-init\fR
+
+.RS 2
+Set connected device into well defined state. After powering up, sd-mux device is in random state.
+SD card and USB may be connected either to DUT or TS. SD card and USB are not tied together so one of them may be
+connected to DUT and the other one may be connected to TS. All combinations are possible.
+The most important thing here is power steering. As we use bistable, two-coil relay we have to make sure that in stable
+state both coils are disconnected from power.
+Unfortunately after connecting sd-mux to USB host, state of power control lines is unknown so we have to set them into
+correct one.
+Init command powers off DUT and connects USB and SD card to TS. Example:
+.nf
+
+[rpm]$ \fBsudo sd-mux-ctrl --device-serial=odroid_u3_1 --init\fR
+
+.fi
+
+.SS \fB\-d, \-\-dut\fR
+
+.RS 2
+Connect USB port and SD card to a DUT (Device Under Test) and power it on.
+After executing this command the DUT should start and load image from SD card mounted in the sd-mux device.
+.PP
+\fBNote\fR that some devices won't (re)start after execution of this command. This is caused by SD multiplexer chip.
+When SD is connected to TS then it is actually connected to USB SD card reader.
+The reader powers up SD card and some part of the voltage is transmitted to the DUT through SD mux chip.
+To force restart one must invoke \fB--tick\fR command after \fB--dut\fR is executed.
+Odroid U3 is an example of device with such behavior.
+.nf
+
+$ \fBsudo sd-mux-ctrl --device-serial=odroid_u3_1 --dut\fR
+$ \fBsudo sd-mux-ctrl --device-serial=odroid_u3_1 --tick\fR
+
+.fi
+
+.SS \fB\-s, \-\-ts\fR
+
+.RS 2
+Connect USB port and SD card to a TS (Test Server) and powers off the DUT (Device Under Test).
+After executing this command SD card is connected to SD card reader at the TS side.
+.PP
+.nf
+
+$ \fBsudo sd-mux-ctrl --device-serial=odroid_u3_1 --ts\fR
+
+.fi
+
+.SS \fB\-p, \-\-pins\fR
+
+.RS 2
+Set FTDI chip (FT245RL) pins to given state. \fB--pins\fR takes 8 bit word as an argument and
+optional \fB--invert\fR argument inverts all bits in the given word.
+This value, after optional inverting, is written to FT245RL D0-D7 pins.
+.PP
+.nf
+
+$ \fBsudo sd-mux-ctrl --device-serial=odroid_u3_1 --pins=0x69 --invert\fR
+
+.fi
+
+.SS \fB\-c, \-\-tick\fR
+
+.RS 2
+Disconnect power from the Device Under Test and reconnect again after 1000 ms.
+If \fB--tick-time\fR is used, then 1000ms is replaced with number of milliseconds given in \fB--tick-time\fR argument.
+.PP
+.nf
+
+$ \fBsudo sd-mux-ctrl --device-serial=odroid_u3_1 --tick --tick-time=2000\fR
+
+.fi
+
+.SS \fB\-y, \-\-dyper1\fR
+
+.RS 2
+Disconnect or connect terminals of dynamic jumper. Argument "on" connects and "off" disconnects the terminals.
+.PP
+.nf
+
+$ \fBsudo sd-mux-ctrl --device-serial=odroid_u3_1 --dyper1 on\fR
+
+.fi
+
+.SS \fB\-z, \-\-dyper2\fR
+
+.RS 2
+Disconnect or connect terminals of dynamic jumper. Argument "on" connects and "off" disconnects the terminals.
+.PP
+.nf
+
+$ \fBsudo sd-mux-ctrl --device-serial=odroid_u3_1 --dyper2 on\fR
+
+.fi
+
+.SH AUTHOR
+
+Adam Malinowski <a.malinowsk2@partner.samsung.com>.
+
+.SH REPORTING BUGS
+
+Please, report bugs to Adam Malinowski <a.malinowsk2@partner.samsung.com>.

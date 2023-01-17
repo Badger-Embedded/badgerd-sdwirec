@@ -1,0 +1,45 @@
+# Copyright (c) 2016 Samsung Electronics Co., Ltd All Rights Reserved
+#
+#    Licensed under the Apache License, Version 2.0 (the "License");
+#    you may not use this file except in compliance with the License.
+#    You may obtain a copy of the License at
+#
+#        http://www.apache.org/licenses/LICENSE-2.0
+#
+#    Unless required by applicable law or agreed to in writing, software
+#    distributed under the License is distributed on an "AS IS" BASIS,
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#    See the License for the specific language governing permissions and
+#    limitations under the License.
+#
+# @file        etc/bash_completion.d/sd-mux-ctrl
+# @author      Adam Malinowski <a.malinowsk2@partner.samsung.com>
+#
+
+_sdmux()
+{
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts="--help --usage --list --device-serial --device-id --show-serial --set-serial --info --status --init --tick --dyper1 --dyper2 --tick-time --dut --ts --vendor --product --device-type --pins --invert"
+
+    case "${prev}" in
+      --device-serial)
+          local running=$(sd-mux-ctrl -l | awk '/Serial/ {sub(",$", "", $6); print $6}')
+          COMPREPLY=( $(compgen -W "${running}" -- ${cur}) )
+                return 0
+                ;;
+      --device-id)
+          local running=$(sd-mux-ctrl -l | awk '/Serial/ {sub(",$", "", $2); print $2}')
+          COMPREPLY=( $(compgen -W "${running}" -- ${cur}) )
+                return 0
+                ;;
+            *)
+            ;;
+    esac
+
+    COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
+    return 0
+}
+complete -F _sdmux sd-mux-ctrl

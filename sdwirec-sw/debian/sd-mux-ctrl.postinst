@@ -1,0 +1,21 @@
+#!/bin/sh
+set -e
+
+action="$1"
+oldversion="$2"
+
+umask 022
+
+set_permissions() {
+	if ! getent group sd-mux >/dev/null; then
+		addgroup --system --quiet sd-mux-ctrl
+	fi
+}
+
+if [ "$action" = configure ]; then
+	set_permissions
+fi
+
+#DEBHELPER#
+
+exit 0
