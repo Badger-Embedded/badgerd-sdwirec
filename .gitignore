@@ -28,6 +28,9 @@ fp-info-cache
 *.xml
 *.csv
 
+build/
 gerbers/
 gerbers.zip
-
+panel-gerbers/
+jlcpcb/
+bom/
