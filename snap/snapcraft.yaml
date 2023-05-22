@@ -1,0 +1,25 @@
+name: sd-mux-ctrl
+base: core20
+version: '0.0.2'
+summary: This project is sd-mux controller - binary for controlling sd-mux device.
+description: |
+  This project is sd-mux controller - binary for controlling sd-mux device.
+
+grade: stable
+confinement: strict
+
+parts:
+  sd-mux-ctrl:
+    plugin: cmake
+    source: sdwirec-sw
+    build-packages:
+      - pkg-config
+      - libftdi1-dev
+      - libpopt-dev
+    stage-packages:
+      - libftdi1-2
+      - libusb-1.0-0
+
+apps:
+  sd-mux-ctrl:
+    command: usr/local/bin/sd-mux-ctrl
