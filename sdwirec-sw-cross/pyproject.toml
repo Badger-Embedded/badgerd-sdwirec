@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "sdwirec"
+version = "0.1.0"
+description = "Cross platform cli application for Badgerd SDWireC"
+authors = ["Talha Can Havadar <havadartalha@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{ include = "*", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pyftdi = "^0.55.4"
+pyusb = "^1.2.1"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+sdwirec = "sdwire:main"
