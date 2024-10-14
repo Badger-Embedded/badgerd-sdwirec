@@ -1,0 +1,41 @@
+name: Publish Python 🐍 distribution 📦 to PyPI and TestPyPI
+on: push
+jobs:
+  build:
+    name: Build SDWireC CLI App.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install pipx
+        run: |
+          sudo apt update
+          sudo apt install pipx
+          pipx ensurepath
+      - name: Install Poetry
+        run: |
+          pipx install poetry==1.8.3
+      - name: Build
+        run: |
+          cd sdwirec-sw-cross
+          poetry build
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-sdwirec-dists
+          path: sdwirec-sw-cross/dist/
+  # pypi-publish:
+  #   name: Upload release to PyPI
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: pypi
+  #     url: https://pypi.org/p/sdwirec
+  #   permissions:
+  #     id-token: write
+  #   steps:
+  #     # retrieve your distributions here
+  #     - name: Publish package distributions to PyPI
+  #       uses: pypa/gh-action-pypi-publish@release/v1
